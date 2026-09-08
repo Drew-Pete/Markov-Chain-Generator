@@ -10,18 +10,33 @@ class MarkovChain{
         Random generator = new Random();
         String book = Files.readString(Path.of("./moby-dick.txt"));
         String[] wordList = book.split("\\s+");
+
+        int limit = wordList.length - (wordList.length / 10);
+
+        String[] trainingList = Arrays.copyOfRange(wordList, 0, limit);
+        String[] evalList = Arrays.copyOfRange(wordList, limit, wordList.length);
+
         String current = "";
         String next = "";
         String previous = "";
-        Map<String, List<String>> oneWordTable = generateOneWordTable(book);
-        Map <String, List<String>> twoWordTable = generateTwoWordTable(book);
+
+        //word tables
+        Map<String, List<String>> oneWordTable = generateOneWordTable(trainingList);
+        Map <String, List<String>> twoWordTable = generateTwoWordTable(trainingList);
+
+        //perplexity tables
+        Map<String, Double> oneWordPerpTable = generatePerpTable(oneWordTable);
+        Map<String, Double> twoWordPerpTable = generatePerpTable(oneWordTable);
+
+
+
         List<String> result = new ArrayList<>();
         int otc = 0;
         int ttc = 0;
         int dtc = 0;
 
-        previous = wordList[generator.nextInt(wordList.length)];
-        current = wordList[generator.nextInt(wordList.length)];
+        previous = wordList[generator.nextInt(limit)];
+        current = wordList[generator.nextInt(limit)];
         result.add(previous);
         result.add(current);
         for(int i = 0; i < 38; i++){
@@ -44,7 +59,7 @@ class MarkovChain{
                 otc++;
                 continue;
             }
-            next = wordList[generator.nextInt(wordList.length)];
+            next = wordList[generator.nextInt(limit)];
             result.add(next);
             previous = current;
             current = next;
@@ -57,9 +72,8 @@ class MarkovChain{
 
     }
 
-    private Map<String, List<String>> generateOneWordTable(String book){
+    private Map<String, List<String>> generateOneWordTable(String[] wordList){
         Map<String, List<String>> table = new HashMap<>();
-        String[] wordList = book.split("\\s+");
         String current = "";
         String next = "";
 
@@ -77,9 +91,8 @@ class MarkovChain{
         return table;
     }
 
-    private Map<String, List<String>> generateTwoWordTable(String book){
+    private Map<String, List<String>> generateTwoWordTable(String[] wordList){
         Map<String, List<String>> table = new HashMap<>();
-        String[] wordList = book.split("\\s+");
         String current = "";
         String next = "";
 
@@ -96,5 +109,19 @@ class MarkovChain{
             table.put(next, new ArrayList<>());
         }
         return table;
+    }
+
+    private Map<String, Double> generatePerpTable(Map<String, List<String>> oneWordTable){
+        Map<String, Double> table = new HashMap<>();
+        oneWordTable.forEach((k, v) -> {
+            table.put(k, null);
+        });
+        return table;
+    }
+
+    private Double calcPerpNumber(){
+        Double perp;
+
+        return perp;
     }
 }
