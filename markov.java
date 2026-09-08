@@ -35,40 +35,42 @@ class MarkovChain{
         int ttc = 0;
         int dtc = 0;
 
-        previous = wordList[generator.nextInt(limit)];
-        current = wordList[generator.nextInt(limit)];
-        result.add(previous);
-        result.add(current);
-        for(int i = 0; i < 38; i++){
-            //get word from twoWordTable
+        previous = evalList[0];
+        current = evalList[1];
+        Double totalprob = 0.0;
+
+        for(int i = 2; i < evalList.length; i++){
+            next = evalList[i];
+
+
+            //level 1 check
             List<String> temp = twoWordTable.get(previous + " " + current);
             if(Objects.nonNull(temp)){
-                next = temp.get(generator.nextInt(temp.size()));
-                result.add(next);
-                previous = current;
-                current = next;
-                ttc++;
+                int freq = Collections.frequency(temp, next);
+                if(freq != 0){
+                    totalprob += (double)freq / temp.size();
+                }
                 continue;
             }
+            //level 2 check
             temp = oneWordTable.get(current);
             if(Objects.nonNull(temp)){
-                next = oneWordTable.get(current).get(generator.nextInt(oneWordTable.get(current).size()));
-                result.add(next);
-                previous = current;
-                current = next;
-                otc++;
+                int freq = Collections.frequency(temp, next);
+                if(freq != 0){
+                    totalprob += 0.4 * (double)freq / temp.size();
+                }
                 continue;
             }
-            next = wordList[generator.nextInt(limit)];
-            result.add(next);
-            previous = current;
-            current = next;
-            dtc++;
+            //level 3 check
+            int freq = Collections.frequency(Arrays.asList(trainingList), next);
+            totalprob += 0.4 * 0.4 * ((double)freq + 1) / (trainingList.length + oneWordPerpTable.size());
+
         }
-        System.out.println(result.stream().collect(Collectors.joining(" ")));
-        System.out.printf("Two Word Table Count: %s \n", ttc);
-        System.out.printf("One Word Table Count: %s \n", otc);
-        System.out.printf("Random Word Count: %s \n", dtc);
+        Double perp = 0.0;//add perplexity calc here
+//        System.out.println(result.stream().collect(Collectors.joining(" ")));
+//        System.out.printf("Two Word Table Count: %s \n", ttc);
+//        System.out.printf("One Word Table Count: %s \n", otc);
+//        System.out.printf("Random Word Count: %s \n", dtc);
 
     }
 
