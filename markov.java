@@ -32,11 +32,33 @@ class main {
 //        System.out.printf("One Word Table With Backoff: %s \n", oneWordBackoff);
 //        System.out.printf("Two Word Table With Training Text: %s \n", twoWordTrainingText);
 
-        BytePairEncoder merge100 = new BytePairEncoder("./moby-dick.txt");
-        merge100.merge(200);
-        System.out.println(merge100.getVocabulary());
-        System.out.println(merge100.getVocabulary().size());
-//        System.out.println(merge100.getWords().toString());
+        String sentence1 = Files.readString(Path.of("./words.txt"));
+        String sentence2 = "In outer aspect, Pip and Dough-Boy made a match, like a black pony and\n" +
+                "a white one, of equal developments, though of dissimilar color, driven\n" +
+                "in one eccentric span.";
+        String sentence3 = "\"I hate Momunmonunsdays\", said Gazorpazorpfield.";
+
+        BytePairEncoder merge50 = new BytePairEncoder("./moby-dick.txt");
+        BytePairEncoder merge200 = new BytePairEncoder("./moby-dick.txt");
+        BytePairEncoder merge1k = new BytePairEncoder("./moby-dick.txt");
+        merge50.merge(100);
+        merge200.merge(200);
+        merge1k.merge(1000);
+
+        System.out.println(merge50.getVocabulary().size());
+        System.out.println(merge50.tokenize(sentence1));
+        System.out.println(merge50.tokenize(sentence2));
+        System.out.println(merge50.tokenize(sentence3));
+
+        System.out.println(merge200.getVocabulary().size());
+        System.out.println(merge200.tokenize(sentence1));
+        System.out.println(merge200.tokenize(sentence2));
+        System.out.println(merge200.tokenize(sentence3));
+
+        System.out.println(merge1k.getVocabulary().size());
+        System.out.println(merge1k.tokenize(sentence1));
+        System.out.println(merge1k.tokenize(sentence2));
+        System.out.println(merge1k.tokenize(sentence3));
 
     }
 

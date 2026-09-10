@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 public class BytePairEncoder {
     private final String bookPath;
     private final List<String> words;
-    private List<String> tokens = new ArrayList<>();
+    private final List<String> tokens = new ArrayList<>();
+    private final List<List<String>> mergeList = new ArrayList<>();
 
     BytePairEncoder(String path) throws IOException {
         this.bookPath = path;
@@ -29,6 +30,9 @@ public class BytePairEncoder {
     }
     public List<String> getWords(){
         return words;
+    }
+    public List<List<String>> getMergeList(){
+        return mergeList;
     }
 
     public void merge(int count){
@@ -56,11 +60,14 @@ public class BytePairEncoder {
                 }
             }
 
+            //create merge list
+            mergeList.add(new ArrayList<>(Arrays.asList(tokens.get(counts.get(maxKey).get(0)), tokens.get(counts.get(maxKey).get(0) + 1))));
+
             // merge most frequent pair
             for(Integer index : counts.getOrDefault(maxKey, new ArrayList<>())){
                 tokens.set(index, maxKey);
             }
-            for(Integer j = counts.getOrDefault(maxKey, new ArrayList<>()).size() - 1; j >= 0; j--){
+            for(int j = counts.getOrDefault(maxKey, new ArrayList<>()).size() - 1; j >= 0; j--){
                 int index = counts.get(maxKey).get(j);
                 tokens.remove(index + 1);
             }
@@ -68,9 +75,48 @@ public class BytePairEncoder {
         }
     }
 
-    public String tokenize(String text){
+    public List<String> tokenize(String text){
+        List<String> tWords = Arrays.stream(text.split("\\s+")).map( e -> {
+            return e + "_";
+        }).toList();
 
-        return text;
+        List<String> charList = new ArrayList<>();
+
+        for(String word : tWords){
+            char[] chars = word.toCharArray();
+            for(char c : chars) {
+                charList.add(String.valueOf(c));
+            }
+        }
+
+        for(List<String> rule : mergeList){
+            String r1 = rule.get(0);
+            String r2 = rule.get(1);
+
+
+            for(int i = 0; i < charList.size() - 1; i++){
+                String t1 = charList.get(i);
+                String t2 = charList.get(i + 1);
+                if(t1.contains("_")){
+                    continue;
+                }
+                if(t1.equals(r1) && t2.equals(r2)){
+                    charList.set(i, t1 + t2);
+                    charList.remove(i + 1);
+                }
+
+            }
+        }
+
+        return charList;
+    }
+
+    public String decode(List<String> tokenList){
+        StringBuilder decoded = new StringBuilder();
+        for(String token : tokenList){
+            decoded.append(token.replace('_', ' '));
+        }
+        return decoded.toString();
     }
 
     public Set<String> getVocabulary(){
