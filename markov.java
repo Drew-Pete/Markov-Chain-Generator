@@ -6,31 +6,37 @@ import java.util.*;
 class main {
 
     public static void main(String[] args) throws IOException {
-        Random generator = new Random();
-        String book = Files.readString(Path.of("./moby-dick.txt"));;
-        String[] wordList = book.split("\\s+");
-        int limit = wordList.length - (wordList.length / 10);
-        String[] trainingList = Arrays.copyOfRange(wordList, 0, limit);
-        String[] evalList = Arrays.copyOfRange(wordList, limit, wordList.length);
-        Map<String, List<String>> oneWordTable = MarkovChain.generateOneWordTable(trainingList);
-        Map<String, List<String>> twoWordTable = MarkovChain.generateTwoWordTable(trainingList);
-        String current = "";
-        String next = "";
-        String previous = "";
+//        Random generator = new Random();
+//        String book = Files.readString(Path.of("./moby-dick.txt"));
+//        String[] wordList = book.split("\\s+");
+//        int limit = wordList.length - (wordList.length / 10);
+//        String[] trainingList = Arrays.copyOfRange(wordList, 0, limit);
+//        String[] evalList = Arrays.copyOfRange(wordList, limit, wordList.length);
+//        Map<String, List<String>> oneWordTable = MarkovChain.generateOneWordTable(trainingList);
+//        Map<String, List<String>> twoWordTable = MarkovChain.generateTwoWordTable(trainingList);
+//        String current = "";
+//        String next = "";
+//        String previous = "";
+//
+//        List<String> result = new ArrayList<>();
+//        int otc = 0;
+//        int ttc = 0;
+//        int dtc = 0;
+//
+//
+//        Double twoWordBackoff = twoWithBackOff(evalList, trainingList, twoWordTable, oneWordTable);//add perplexity calc here
+//        Double oneWordBackoff = oneWithBackOff(evalList, trainingList, oneWordTable);
+//        Double twoWordTrainingText = twoWithBackOff(trainingList, trainingList, twoWordTable, oneWordTable);
 
-        List<String> result = new ArrayList<>();
-        int otc = 0;
-        int ttc = 0;
-        int dtc = 0;
+//        System.out.printf("Two Word Table With Backoff: %s \n", twoWordBackoff);
+//        System.out.printf("One Word Table With Backoff: %s \n", oneWordBackoff);
+//        System.out.printf("Two Word Table With Training Text: %s \n", twoWordTrainingText);
 
-
-        Double twoWordBackoff = twoWithBackOff(evalList, trainingList, twoWordTable, oneWordTable);//add perplexity calc here
-        Double oneWordBackoff = oneWithBackOff(evalList, trainingList, oneWordTable);
-        Double twoWordTrainingText = twoWithBackOff(trainingList, trainingList, twoWordTable, oneWordTable);
-
-        System.out.printf("Two Word Table With Backoff: %s \n", twoWordBackoff);
-        System.out.printf("One Word Table With Backoff: %s \n", oneWordBackoff);
-        System.out.printf("Two Word Table With Training Text: %s \n", twoWordTrainingText);
+        BytePairEncoder merge100 = new BytePairEncoder("./moby-dick.txt");
+        merge100.merge(200);
+        System.out.println(merge100.getVocabulary());
+        System.out.println(merge100.getVocabulary().size());
+//        System.out.println(merge100.getWords().toString());
 
     }
 
