@@ -76,7 +76,14 @@ class main {
 
         WordEmbeddings wordEmbeddings = new WordEmbeddings("./glove.50k.txt");
 //        System.out.println(wordEmbeddings.getWordAndTheirNumbers());
-        System.out.println(wordEmbeddings.calcCosineSimilarity("government", "people"));
+        //System.out.println(wordEmbeddings.calcCosineSimilarity("government", "people"));
+
+
+        //calc similar words with a vector
+        List<String> analogyList = new ArrayList<>(Arrays.asList("king", "java", "coffee", "queen"));
+        System.out.println(wordEmbeddings.getSimilarWordsWithVector(analogyList, 10, new HashSet<>()));
+
+
 
     }
 
