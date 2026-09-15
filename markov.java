@@ -46,19 +46,31 @@ class main {
         merge1k.merge(1000);
 
         System.out.println(merge50.getVocabulary().size());
-        System.out.println(merge50.tokenize(sentence1));
-        System.out.println(merge50.tokenize(sentence2));
-        System.out.println(merge50.tokenize(sentence3));
 
-        System.out.println(merge200.getVocabulary().size());
-        System.out.println(merge200.tokenize(sentence1));
-        System.out.println(merge200.tokenize(sentence2));
-        System.out.println(merge200.tokenize(sentence3));
+        List<String> merge50Tokens = merge50.tokenize(sentence1);
+        List<String> merge50TokensTwo = merge50.tokenize(sentence2);
+        List<String> merge50TokensThree = merge50.tokenize(sentence3);
 
-        System.out.println(merge1k.getVocabulary().size());
-        System.out.println(merge1k.tokenize(sentence1));
-        System.out.println(merge1k.tokenize(sentence2));
-        System.out.println(merge1k.tokenize(sentence3));
+        System.out.println(merge50Tokens);
+        System.out.println(merge50.decode(merge50Tokens));
+
+        System.out.println(merge50TokensTwo);
+        System.out.println(merge50.decode(merge50TokensTwo));
+
+        System.out.println(merge50TokensThree);
+        System.out.println(merge50.decode(merge50TokensThree));
+
+
+//        System.out.println(merge200.getVocabulary().size());
+//        System.out.println(merge200.tokenize(sentence1));
+//        System.out.println(merge200.tokenize(sentence2));
+//        System.out.println(merge200.tokenize(sentence3));
+//
+//
+//        System.out.println(merge1k.getVocabulary().size());
+//        System.out.println(merge1k.tokenize(sentence1));
+//        System.out.println(merge1k.tokenize(sentence2));
+//        System.out.println(merge1k.tokenize(sentence3));
 
     }
 
