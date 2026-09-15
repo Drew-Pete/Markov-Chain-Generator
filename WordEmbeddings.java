@@ -73,7 +73,7 @@ public class WordEmbeddings {
 
         //find k similar words
         return wordCosineMap.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(k).map(e -> {
-            System.out.println(e.getValue());
+            System.out.print(e.getValue() + ", ");
             return e.getKey();
         }).collect(Collectors.toList());
     }
@@ -113,7 +113,7 @@ public class WordEmbeddings {
 
         //find k similar words
         return wordCosineMap.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(k).map(e -> {
-            System.out.println(e.getValue());
+            System.out.print(e.getValue() + ", ");
             return e.getKey();
         }).collect(Collectors.toList());
     }

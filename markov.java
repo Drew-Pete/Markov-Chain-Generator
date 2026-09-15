@@ -79,11 +79,36 @@ class main {
         //System.out.println(wordEmbeddings.calcCosineSimilarity("government", "people"));
 
 
+
+        //tests
+        //nearest 10
+        System.out.println("\nstarting word: king " + wordEmbeddings.getSimilarWords("king", 10, new HashSet<>()));
+        System.out.println("\nstarting word: java " + wordEmbeddings.getSimilarWords("java", 10, new HashSet<>()));
+        System.out.println("\nstarting word: coffee " + wordEmbeddings.getSimilarWords("coffee", 10, new HashSet<>()));
+        System.out.println("\nstarting word: pez " + wordEmbeddings.getSimilarWords("pez", 10, new HashSet<>()));
+
         //calc similar words with a vector
-        List<String> analogyList = new ArrayList<>(Arrays.asList("king", "java", "coffee", "queen"));
-        System.out.println(wordEmbeddings.getSimilarWordsWithVector(analogyList, 10, new HashSet<>()));
+        List<String> analogyList1 = new ArrayList<>(Arrays.asList("man", "king", "woman"));
+        System.out.println("\nAnalogy: man -> king :: woman -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList1, 3, new HashSet<>()));
+
+        List<String> analogyList2 = new ArrayList<>(Arrays.asList("france", "paris", "italy"));
+        System.out.println("\nAnalogy: france -> paris :: italy -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList2, 3, new HashSet<>()));
+
+        List<String> analogyList3 = new ArrayList<>(Arrays.asList("walk", "walked", "swim"));
+        System.out.println("\nAnalogy: walked -> walk :: swim -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList3, 3, new HashSet<>()));
+
+        List<String> analogyList4 = new ArrayList<>(Arrays.asList("dog", "walk", "fish"));
+        System.out.println("\nAnalogy: dog -> walk :: cat -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList4, 3, new HashSet<>()));
+
+        List<String> analogyList5 = new ArrayList<>(Arrays.asList("gaon", "thermonuclear", "prawns"));
+        System.out.println("\nAnalogy: gaon -> thermonuclear :: prawns -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList5, 3, new HashSet<>()));
 
 
+        System.out.println("Cosine Similarity: surgeon man " + wordEmbeddings.calcCosineSimilarity("surgeon", "man"));
+        System.out.println("Cosine Similarity: surgeon woman " + wordEmbeddings.calcCosineSimilarity("surgeon", "woman"));
+
+        System.out.println("Cosine Similarity: nurse man " + wordEmbeddings.calcCosineSimilarity("nurse", "man"));
+        System.out.println("Cosine Similarity: nurse woman " + wordEmbeddings.calcCosineSimilarity("nurse", "woman"));
 
     }
 
