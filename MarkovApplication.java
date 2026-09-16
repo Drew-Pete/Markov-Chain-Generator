@@ -1,10 +1,7 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
-class main {
-
+class MarkovApplication {
     public static void main(String[] args) throws IOException {
 //        Random generator = new Random();
 //        String book = Files.readString(Path.of("./moby-dick.txt"));
@@ -74,9 +71,9 @@ class main {
 
 
 
-        WordEmbeddings wordEmbeddings = new WordEmbeddings("./glove.50k.txt");
+        WordEmbeddings wordEmbeddings = new WordEmbeddings("textFiles/glove.50k.txt");
 //        System.out.println(wordEmbeddings.getWordAndTheirNumbers());
-        //System.out.println(wordEmbeddings.calcCosineSimilarity("government", "people"));
+//        System.out.println(wordEmbeddings.calcCosineSimilarity("government", "people"));
 
 
 
@@ -98,7 +95,7 @@ class main {
         System.out.println("\nAnalogy: walked -> walk :: swim -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList3, 3, new HashSet<>()));
 
         List<String> analogyList4 = new ArrayList<>(Arrays.asList("dog", "walk", "fish"));
-        System.out.println("\nAnalogy: dog -> walk :: cat -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList4, 3, new HashSet<>()));
+        System.out.println("\nAnalogy: dog -> walk :: fish -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList4, 3, new HashSet<>()));
 
         List<String> analogyList5 = new ArrayList<>(Arrays.asList("gaon", "thermonuclear", "prawns"));
         System.out.println("\nAnalogy: gaon -> thermonuclear :: prawns -> " + wordEmbeddings.getSimilarWordsWithVector(analogyList5, 3, new HashSet<>()));
@@ -111,92 +108,4 @@ class main {
         System.out.println("Cosine Similarity: nurse woman " + wordEmbeddings.calcCosineSimilarity("nurse", "woman"));
 
     }
-
-    private static Map<String, Double> generatePerpTable(Map<String, List<String>> oneWordTable) {
-        Map<String, Double> table = new HashMap<>();
-        oneWordTable.forEach((k, v) -> {
-            table.put(k, null);
-        });
-        return table;
-    }
-
-    private static Double calcPerpNumber(Double totalProb, int testedWords) {
-        return Math.exp((-totalProb / testedWords));
-    }
-
-    private static Double twoWithBackOff(String[] evalList, String[] trainingList, Map<String, List<String>> twoWordTable, Map<String, List<String>> oneWordTable) {
-        String previous = evalList[0];
-        String current = evalList[1];
-        String next = "";
-        Double totalprob = 0.0;
-        int words = 0;
-
-        for (int i = 2; i < evalList.length; i++) {
-            next = evalList[i];
-
-
-            //level 1 check
-            List<String> temp = twoWordTable.get(previous + " " + current);
-            if (Objects.nonNull(temp)) {
-                int freq = Collections.frequency(temp, next);
-                if (freq != 0) {
-                    totalprob += Math.log((double) freq / temp.size());
-                    previous = current;
-                    current = next;
-                    words++;
-                    continue;
-                }
-            }
-            //level 2 check
-            temp = oneWordTable.get(current);
-            if (Objects.nonNull(temp)) {
-                int freq = Collections.frequency(temp, next);
-                if (freq != 0) {
-                    totalprob += Math.log(0.4 * (double) freq / temp.size());
-                    previous = current;
-                    current = next;
-                    words++;
-                    continue;
-                }
-            }
-            //level 3 check
-            int freq = Collections.frequency(Arrays.asList(trainingList), next);
-            totalprob += Math.log(0.4 * 0.4 * ((double) freq + 1) / (trainingList.length + oneWordTable.size()));
-            previous = current;
-            current = next;
-            words++;
-
-        }
-        return calcPerpNumber(totalprob, words);
-    }
-
-    private static Double oneWithBackOff(String[] evalList, String[] trainingList, Map<String, List<String>> oneWordTable) {
-        String current = evalList[1];
-        String next = "";
-        Double totalprob = 0.0;
-        int words = 0;
-
-        for (int i = 1; i < evalList.length; i++) {
-            next = evalList[i];
-
-            //level 2 check
-            List<String> temp = oneWordTable.get(current);
-            if (Objects.nonNull(temp)) {
-                int freq = Collections.frequency(temp, next);
-                if (freq != 0) {
-                    totalprob += Math.log(0.4 * (double) freq / temp.size());
-                    current = next;
-                    words++;
-                    continue;
-                }
-            }
-            //level 3 check
-            int freq = Collections.frequency(Arrays.asList(trainingList), next);
-            totalprob += Math.log(0.4 * 0.4 * ((double) freq + 1) / (trainingList.length + oneWordTable.size()));
-            current = next;
-            words++;
-
-        }
-        return calcPerpNumber(totalprob, words);    }
-
 }
