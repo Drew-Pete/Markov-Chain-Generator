@@ -77,10 +77,10 @@ class MarkovApplication {
 
 
         MarkovChain markovChain = new MarkovChain("./textFiles/moby-dick.txt");
-        System.out.println(markovChain.oneWithBackOff());
+//        System.out.println(markovChain.oneWithBackOff());
         System.out.println(markovChain.twoWithBackOff());
-        System.out.println(markovChain.oneWithBackOffWithPerp());
-        System.out.println(markovChain.twoWithBackOffWithPerp());
+//        System.out.println(markovChain.oneWithBackOffWithPerp());
+//        System.out.println(markovChain.twoWithBackOffWithPerp());
 
 
         //tests

@@ -147,7 +147,8 @@ public class MarkovChain {
         }
         return calcPerpNumber(totalprob, words);    }
 
-    public List<String> twoWithBackOff(){
+    public List<String> twoWithBackOff() throws IOException {
+        WordEmbeddings wordEmbeddings = new WordEmbeddings("./textFiles/glove.50k.txt");
         List<String> result = new ArrayList<>();
         String previous = "";
         String current = "";
@@ -156,6 +157,7 @@ public class MarkovChain {
         int otc = 0;    //one table count
         int ttc = 0;    //two table count
         int dtc = 0;    //default count
+        int swc = 0;    //similar word count
 
         previous = words.get(generator.nextInt(words.size() - 1));
         current = words.get(generator.nextInt(words.size() - 1));
@@ -181,12 +183,27 @@ public class MarkovChain {
                 otc++;
                 continue;
             }
-            next = words.get(generator.nextInt(words.size() - 1));
-            result.add(next);
+
+            List<String> similarWords = wordEmbeddings.getSimilarWords(current, 20, new HashSet<>(result));
+
+            if(!similarWords.isEmpty()) {
+                next = similarWords.getFirst();
+                result.add(next);
+                previous = current;
+                current = next;
+                swc++;
+                continue;
+            }
+            result.add(words.get(generator.nextInt(words.size())));
             previous = current;
             current = next;
             dtc++;
         }
+
+        System.out.println("\nTwo Table Count: " + ttc);
+        System.out.println("One Table Count: " + otc);
+        System.out.println("Default Table Count: " + dtc);
+        System.out.println("Similar Words Count: " + swc);
 
         return result;
     }

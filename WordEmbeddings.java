@@ -61,6 +61,10 @@ public class WordEmbeddings {
         //create and populate map of compared word(key), cosine similarity
         Map<String, Double> wordCosineMap = new HashMap<>();
 
+
+        if(!wordAndTheirNumbers.containsKey(word)) {
+            return new ArrayList<>();
+        }
         //populate map
         for (String key : wordAndTheirNumbers.keySet()) {
             if (excludeWords.contains(key) || word.equals(key)) {
