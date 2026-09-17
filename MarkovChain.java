@@ -11,13 +11,21 @@ public class MarkovChain {
     private final List<String> words;
     private final Map<String, List<String>> oneWordTable;
     private final Map<String, List<String>> twoWordTable;
+    private final List<String> evalList;
+    private final List<String> trainingList;
+    private int limit;
 
     public MarkovChain(String path) throws IOException {
         this.bookPath = path;
         this.words = Arrays.stream(Files.readString(Path.of(bookPath)).split("\\s+")).collect(Collectors.toList());
-        this.oneWordTable = generateOneWordTable(words);
-        this.twoWordTable = generateTwoWordTable(words);
+        this.limit = words.size() - (words.size() / 10); //int at 90% of book
+        this.evalList = words.subList(limit, words.size());
+        this.trainingList = words.subList(0, limit);
+        this.oneWordTable = generateOneWordTable(trainingList);
+        this.twoWordTable = generateTwoWordTable(trainingList);
     }
+
+
 
     public static Map<String, List<String>> generateOneWordTable(List<String> wordList){
         Map<String, List<String>> table = new HashMap<>();
@@ -58,20 +66,20 @@ public class MarkovChain {
         return table;
     }
 
-    private static Double calcPerpNumber(Double totalProb, int testedWords) {
+    private Double calcPerpNumber(Double totalProb, int testedWords) {
         return Math.exp((-totalProb / testedWords));
     }
 
     //contains perplexity calc
-    private static Double twoWithBackOffWithPerp(String[] evalList, String[] trainingList, Map<String, List<String>> twoWordTable, Map<String, List<String>> oneWordTable) {
-        String previous = evalList[0];
-        String current = evalList[1];
+    public Double twoWithBackOffWithPerp() {
+        String previous = evalList.get(0);
+        String current = evalList.get(1);
         String next = "";
         Double totalprob = 0.0;
         int words = 0;
 
-        for (int i = 2; i < evalList.length; i++) {
-            next = evalList[i];
+        for (int i = 2; i < evalList.size(); i++) {
+            next = evalList.get(i);
 
 
             //level 1 check
@@ -99,8 +107,8 @@ public class MarkovChain {
                 }
             }
             //level 3 check
-            int freq = Collections.frequency(Arrays.asList(trainingList), next);
-            totalprob += Math.log(0.4 * 0.4 * ((double) freq + 1) / (trainingList.length + oneWordTable.size()));
+            int freq = Collections.frequency(trainingList, next);
+            totalprob += Math.log(0.4 * 0.4 * ((double) freq + 1) / (trainingList.size() + oneWordTable.size()));
             previous = current;
             current = next;
             words++;
@@ -110,14 +118,14 @@ public class MarkovChain {
     }
 
     //contains perplexity calc
-    private static Double oneWithBackOffWithPerp(String[] evalList, String[] trainingList, Map<String, List<String>> oneWordTable) {
-        String current = evalList[1];
+    public Double oneWithBackOffWithPerp() {
+        String current = evalList.getFirst();
         String next = "";
         Double totalprob = 0.0;
         int words = 0;
 
-        for (int i = 1; i < evalList.length; i++) {
-            next = evalList[i];
+        for (int i = 1; i < evalList.size(); i++) {
+            next = evalList.get(i);
 
             //level 2 check
             List<String> temp = oneWordTable.get(current);
@@ -131,15 +139,15 @@ public class MarkovChain {
                 }
             }
             //level 3 check
-            int freq = Collections.frequency(Arrays.asList(trainingList), next);
-            totalprob += Math.log(0.4 * 0.4 * ((double) freq + 1) / (trainingList.length + oneWordTable.size()));
+            int freq = Collections.frequency(trainingList, next);
+            totalprob += Math.log(0.4 * 0.4 * ((double) freq + 1) / (trainingList.size() + oneWordTable.size()));
             current = next;
             words++;
 
         }
         return calcPerpNumber(totalprob, words);    }
 
-    private List<String> twoWithBackOff(){
+    public List<String> twoWithBackOff(){
         List<String> result = new ArrayList<>();
         String previous = "";
         String current = "";
@@ -183,7 +191,7 @@ public class MarkovChain {
         return result;
     }
 
-    private List<String> oneWithBackOff(){
+    public List<String> oneWithBackOff(){
         List<String> result = new ArrayList<>();
         String current = "";
         String next = "";
